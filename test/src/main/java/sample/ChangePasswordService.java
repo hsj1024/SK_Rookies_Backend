@@ -1,12 +1,13 @@
 package sample;
 
-public class ChangePasswordService {
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ChangePasswordService {
+	@Autowired
 	private MemberDAO memberDAO;
-	
-	public ChangePasswordService(MemberDAO memberDAO) {
-		this.memberDAO = memberDAO;
-	}
 	
 	public void changePassword(String email, String oldPass, String newPass) {
 		Member member = memberDAO.selectByEmail(email);
@@ -18,4 +19,3 @@ public class ChangePasswordService {
 		memberDAO.update(member);
 	}
 }
-

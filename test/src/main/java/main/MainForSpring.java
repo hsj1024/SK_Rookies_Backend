@@ -7,12 +7,14 @@ import java.io.InputStreamReader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import assembler.Assembler;
 import config.AppCtx;
 import sample.ChangePasswordService;
 import sample.DuplicateMemberException;
+import sample.MemberInfoPrinter;
+import sample.MemberListPrinter;
 import sample.MemberRegisterService;
 import sample.RegisterRequest;
+import sample.VersionPrinter;
 
 public class MainForSpring {
 
@@ -29,24 +31,46 @@ public class MainForSpring {
 			if (command.startsWith("exit")) {
 				System.out.println("종료합니다.");
 				break;
-			}
-			
+			}			
 			if (command.startsWith("new")) {
 				processNewCommand(command.split(" "));
 				continue;
 			}
-
 			if (command.startsWith("change")) {
 				processChangeCommand(command.split(" "));
 				continue;
-			}
-			
+			}			
+			if (command.startsWith("list")) {
+				processListCommand();
+				continue;
+			}			
+			if (command.startsWith("info")) {
+				processInfoCommand(command.split(" "));
+				continue;
+			}			
+			if (command.startsWith("version")) {
+				processVersionCommand();
+				continue;
+			}			
 			printHelp();
 		}
-
 	}
 	
-	// private static Assembler assembler = new Assembler();
+	private static void processVersionCommand() {
+		VersionPrinter versionPrinter = ctx.getBean("versionPrinter", VersionPrinter.class);
+		versionPrinter.print();
+	}
+
+	private static void processInfoCommand(String[] args) {
+		// 입력값 체크 로직은 생략 
+		MemberInfoPrinter memberInfoPrinter = ctx.getBean("infoPrinter", MemberInfoPrinter.class);
+		memberInfoPrinter.printMemberInfo(args[1]);	
+	}
+
+	private static void processListCommand() {
+		MemberListPrinter memberListPrinter = ctx.getBean("listPrinter", MemberListPrinter.class);
+		memberListPrinter.printAll();		
+	}
 
 	private static void processChangeCommand(String[] args) {
 		if (args.length != 4) {
@@ -54,8 +78,7 @@ public class MainForSpring {
 			return;
 		}
 		
-		// ChangePasswordService pswSvc = assembler.getPwdSvc();
-		ChangePasswordService pswSvc = ctx.getBean("changePwdSvc", ChangePasswordService.class);
+		ChangePasswordService pswSvc = ctx.getBean("changePasswordService", ChangePasswordService.class);
 		try {
 			pswSvc.changePassword(args[1], args[2], args[3]);
 			System.out.println("패스워드를 변경했습니다.");
@@ -80,8 +103,7 @@ public class MainForSpring {
 			return;
 		}
 		
-		// MemberRegisterService regSvc = assembler.getRegSvc();
-		MemberRegisterService regSvc = ctx.getBean("memberRegSvc", MemberRegisterService.class);
+		MemberRegisterService regSvc = ctx.getBean("memberRegisterService", MemberRegisterService.class);
  		try {
 			regSvc.regist(regReq);
 			System.out.println("정상적으로 등록되었습니다.");
@@ -97,5 +119,4 @@ public class MainForSpring {
 		System.out.println("change 이메일 현재패스워드 새패스워드");
 		System.out.println("exit");
 	}
-
 }
