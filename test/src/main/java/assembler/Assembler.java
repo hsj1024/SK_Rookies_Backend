@@ -11,8 +11,8 @@ public class Assembler {
 	
 	public Assembler() {
 		this.memberDAO = new MemberDAO();
-		//this.regSvc = new MemberRegisterService(this.memberDAO);
-		//this.pwdSvc = new ChangePasswordService(this.memberDAO);
+		this.regSvc = new MemberRegisterService(this.memberDAO);
+		this.pwdSvc = new ChangePasswordService(this.memberDAO);
 	}
 
 	public MemberDAO getMemberDAO() {
